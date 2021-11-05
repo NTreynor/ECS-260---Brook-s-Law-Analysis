@@ -17,11 +17,19 @@ class Author:
     def update_last_commit(self, new_last_commit):
         self.last_commit = new_last_commit
 
+    def __str__(self):
+        return "Author name is %s. Date of first commit is %s. Date of final commit is %s." % (self.name, str(self.first_commit), str(self.last_commit))
+
 
 def main():
     testUrl = ["https://github.com/Leaflet/Leaflet"]
-    uniqueAuthors = populateAuthors(testUrl)
+    uniqueAuthors, author_objects = populateAuthors(testUrl)
 
+    print(len(uniqueAuthors))
+    print(len(author_objects))
+    print(str(author_objects[0]))
+    print(str(author_objects[1])) # TODO: FIX BUG -- Subsequent author objects are NOT having their final commit date updated appropriately.
+    print(str(author_objects[2])) # Actively investigating.
     return uniqueAuthors
 
 
@@ -42,17 +50,12 @@ def populateAuthors(repoUrl):
             new_author = Author(current_author, commit.author_date, commit.author_date)
             repo_author_objects.append(new_author)
             print("New Author Found: " + current_author)
-    return repo_authors
+    return repo_authors, repo_author_objects
 
 # There should be a method to update this such that we can perform all updates in one pass to improve time complexity, I beleive.
 
-
+# Perhaps unneeded function definitions below:
 # def findFirstCommit(author, repoUrl):
-
-# TODO: Find date of first commit from author
-
 # def findLastCommit(author, repoUrl):
-
-# TODO: Find date of last commit from author
 
 main()
