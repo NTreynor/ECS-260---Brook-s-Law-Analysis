@@ -3,7 +3,7 @@ from pydriller.metrics.process.code_churn import CodeChurn
 from datetime import datetime, timedelta
 
 # Can be local or remote repository
-# urls = ["https://github.com/runelite/runelite"]       
+# urls = ["https://github.com/runelite/runelite"]
 # urls = ["https://github.com/cosmos/cosmos-sdk"]       
 # urls = ["https://github.com/deepmind/alphafold"]      
 # urls = ["https://github.com/MangoDB-io/MangoDB"]      
@@ -41,22 +41,22 @@ for commit in Repository(path_to_repo=urls).traverse_commits():
     Print commit author information
     No Error
     '''
-    # print(commit.hash, commit.author.name, commit.author_date)
+    print(commit.hash, commit.author.name, commit.author_date)
     
     '''
     An attempt to do something else with commit.author.name and commit.author_date
     No error
     '''
-    # commit_author = commit.author.name
-    # commit_date = commit.author_date
-    # print(commit_author, commit_date)
+    commit_author = commit.author.name
+    commit_date = commit.author_date
+    print(commit_author, commit_date)
     
     '''
     Store authors into dictionary
     PermissionError: [WinError 5] Access is denied?
     Both lines return the same errors
     '''
-    # active_contributors[commit.author.name].append(commit.author_date)        
+    active_contributors[commit.author.name].append(commit.author_date)
     # active_contributors[commit_author].append(commit_date)
     
     # 
