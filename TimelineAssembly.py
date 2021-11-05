@@ -39,10 +39,11 @@ def populateAuthors(repoUrl):
     for commit in Repository(path_to_repo=repoUrl).traverse_commits():
         current_author = commit.author.name
         if current_author in repo_authors: # A more recent commit by this author has been found
+            print("Repeat commit by " + current_author)
             for x in repo_author_objects:
                 if x.name == current_author: # so we find the appropriate author object
                     x.last_commit = commit.author_date # And update it's date.
-                    print("New commit by " + current_author)
+                    print("New commit by " + current_author + "Appropriately updated")
                 break
             continue
         else: # This is the first instance this author has been detected. Instantiate a new author object.
