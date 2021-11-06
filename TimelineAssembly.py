@@ -20,6 +20,16 @@ class Author:
     def __str__(self):
         return "Author name is %s. Date of first commit is %s. Date of final commit is %s." % (self.name, str(self.first_commit), str(self.last_commit))
 
+class TimelineBreakPoint:
+    def __init__(self, date, was_first_commit, was_final_commit):
+        self.date = date
+        self.was_first_commit = was_first_commit
+        self.was_final_commit = was_final_commit
+        self.active_devs = 0
+
+    def __str__(self):
+        return "Breakpoint on %s. First commit: %s. Final commit: %s. Active devs from this point on: %s." % (str(self.date), self.was_first_commit, self.was_final_commit, self.active_devs)
+
 
 def main():
     testUrl = ["https://github.com/Leaflet/Leaflet"]
@@ -27,30 +37,50 @@ def main():
 
     print(len(uniqueAuthors))
     print(len(author_objects))
-    print(str(author_objects[0]))
-    print(str(author_objects[1])) # TODO: FIX BUG -- Subsequent author objects are NOT having their final commit date updated appropriately.
-    print(str(author_objects[2])) # Actively investigating.
+    #print(str(author_objects[0]))
+    #print(str(author_objects[1]))
+    #print(str(author_objects[2]))
+
     return uniqueAuthors
+
+
+
+def populateTimeline(author_objects):
+    timeline = []
+    for x in author_objects:
+        if (x.first_commit != x.last_commit):
+            firstBreakpoint = TimelineBreakPoint(x.first_commit, 1, 0)
+            secondBreakpoint = TimelineBreakPoint(x.last_commit, 0, 1)
+
+            # Sorting?
+            timeline.append(firstBreakpoint)
+            timeline.append(secondBreakpoint)
+        else:
+            print("First and final commit are the same. No breakpoint to create.")
+
+    newlist = sorted(timeline, key=lambda y: y.date, reverse=False) # TODO: still need to test this
+
+
 
 
 def populateAuthors(repoUrl):
     repo_authors = []
     repo_author_objects = []
     for commit in Repository(path_to_repo=repoUrl).traverse_commits():
-        current_author = commit.author.name
+        current_author = commit.committer.email
         if current_author in repo_authors: # A more recent commit by this author has been found
-            print("Repeat commit by " + current_author)
+            #print("Repeat commit by " + current_author)
             for x in repo_author_objects:
                 if x.name == current_author: # so we find the appropriate author object
-                    x.last_commit = commit.author_date # And update it's date.
-                    print("New commit by " + current_author + "Appropriately updated")
-                break
+                    x.last_commit = commit.committer_date # And update it's date.
+                    #print("New commit by " + current_author + " appropriately updated")
+                    break
             continue
         else: # This is the first instance this author has been detected. Instantiate a new author object.
             repo_authors.append(current_author)
-            new_author = Author(current_author, commit.author_date, commit.author_date)
+            new_author = Author(current_author, commit.committer_date, commit.committer_date)
             repo_author_objects.append(new_author)
-            print("New Author Found: " + current_author)
+            #print("New Author Found: " + current_author)
     return repo_authors, repo_author_objects
 
 # There should be a method to update this such that we can perform all updates in one pass to improve time complexity, I beleive.
