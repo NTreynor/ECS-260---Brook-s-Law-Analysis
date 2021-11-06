@@ -42,10 +42,30 @@ def main():
     #print(str(author_objects[1]))
     #print(str(author_objects[2]))
 
-    populateTimeline(author_objects)
+    timeline = populateTimeline(author_objects)
+    intervals = locatePairedTwoWeekPlusIntervals(timeline)
+    print(len(intervals))
     return uniqueAuthors
 
+def locatePairedTwoWeekPlusIntervals(timeline):
+    print("Attempting to locate paired two week intervals")
+    significantBreakpoints = []
+    for i in range (1, len(timeline)-1):
+        timeDiff = timeline[i+1].date - timeline[i].date
+        #print("Difference in time: " + str(timeDiff))
+        if (timeDiff >= timedelta(days=14)) and (timeline[i].active_devs < timeline[i+1].active_devs) and timeline[i].active_devs >= 5:
 
+            # If this is the case, then we have a 2 week period of stable development, that meet our team size requirements, after the addition of a new team member.
+
+            timeDiffPrev = timeline[i].date - timeline[i-1].date
+            if (timeDiffPrev >= timedelta(days=14)) and timeline[i-1].active_devs >= 5:
+
+                # And we can now also confirm that we had a two week stable development period beforehand with which to compare, and can make note of it.
+                print("Significant period of development found surrounding " + str(timeline[i]))
+                print("Stable development from " + (str(timeline[i-1].date)) + " to " + (str(timeline[i].date)))
+                print("and from " + (str(timeline[i].date)) + " to " + (str(timeline[i+1].date)) + "\n")
+                significantBreakpoints.append((timeline[i-1], timeline[i], timeline[i+1]))
+    return significantBreakpoints
 
 def populateTimeline(author_objects):
     timeline = []
@@ -72,6 +92,8 @@ def populateTimeline(author_objects):
             activeDevelopers -= 1
             z.active_devs = activeDevelopers
         print(str(z))
+
+    return new_list
 
 
 
