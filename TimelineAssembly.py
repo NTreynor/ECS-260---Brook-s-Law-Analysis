@@ -21,14 +21,15 @@ class Author:
         return "Author name is %s. Date of first commit is %s. Date of final commit is %s." % (self.name, str(self.first_commit), str(self.last_commit))
 
 class TimelineBreakPoint:
-    def __init__(self, date, was_first_commit, was_final_commit):
+    def __init__(self, date, was_first_commit, was_final_commit, authorEmail):
         self.date = date
         self.was_first_commit = was_first_commit
         self.was_final_commit = was_final_commit
+        self.authorEmail = authorEmail
         self.active_devs = 0
 
     def __str__(self):
-        return "Breakpoint on %s. First commit: %s. Final commit: %s. Active devs from this point on: %s." % (str(self.date), self.was_first_commit, self.was_final_commit, self.active_devs)
+        return "Breakpoint on %s. First commit: %s. Final commit: %s. Active devs from this point on: %s. Author was %s." % (str(self.date), self.was_first_commit, self.was_final_commit, self.active_devs, self.authorEmail)
 
 
 def main():
@@ -41,6 +42,7 @@ def main():
     #print(str(author_objects[1]))
     #print(str(author_objects[2]))
 
+    populateTimeline(author_objects)
     return uniqueAuthors
 
 
@@ -49,8 +51,9 @@ def populateTimeline(author_objects):
     timeline = []
     for x in author_objects:
         if (x.first_commit != x.last_commit):
-            firstBreakpoint = TimelineBreakPoint(x.first_commit, 1, 0)
-            secondBreakpoint = TimelineBreakPoint(x.last_commit, 0, 1)
+            firstBreakpoint = TimelineBreakPoint(x.first_commit, 1, 0, x.name)
+            secondBreakpoint = TimelineBreakPoint(x.last_commit, 0, 1, x.name)
+            print("Two breakpoints added. " + str(x.first_commit), str(x.last_commit))
 
             # Sorting?
             timeline.append(firstBreakpoint)
@@ -58,7 +61,19 @@ def populateTimeline(author_objects):
         else:
             print("First and final commit are the same. No breakpoint to create.")
 
-    newlist = sorted(timeline, key=lambda y: y.date, reverse=False) # TODO: still need to test this
+    new_list = sorted(timeline, key=lambda y: y.date, reverse=False)
+
+    activeDevelopers = 0
+    for z in new_list:
+        if z.was_first_commit:
+            activeDevelopers += 1
+            z.active_devs = activeDevelopers
+        if z.was_final_commit:
+            activeDevelopers -= 1
+            z.active_devs = activeDevelopers
+        print(str(z))
+
+
 
 
 
