@@ -32,43 +32,45 @@ class TimelineBreakPoint:
         return "Breakpoint on %s. First commit: %s. Final commit: %s. Active devs from this point on: %s. Author was %s." % (str(self.date), self.was_first_commit, self.was_final_commit, self.active_devs, self.authorEmail)
 
 def main():
-    testUrl = ["https://github.com/Leaflet/Leaflet"]
-    uniqueAuthors, author_objects = populateAuthors(testUrl)
+    testUrl = ["https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite"]
+    for x in testUrl:
+        uniqueAuthors, author_objects = populateAuthors(x)
 
-    print(len(uniqueAuthors))
-    print(len(author_objects))
-    #print(str(author_objects[0]))
-    #print(str(author_objects[1]))
-    #print(str(author_objects[2]))
+        print(len(uniqueAuthors))
+        print(len(author_objects))
+        #print(str(author_objects[0]))
+        #print(str(author_objects[1]))
+        #print(str(author_objects[2]))
 
-    timeline = populateTimeline(author_objects)
-    intervals = locatePairedTwoWeekPlusIntervals(timeline)
-    print(len(intervals))
+        timeline = populateTimeline(author_objects)
+        intervals = locatePairedTwoWeekPlusIntervals(timeline)
+        print(len(intervals))
     
-    calculate_code_churn(testUrl, intervals)
-    
-    return uniqueAuthors
+        calculate_code_churn(x, intervals)
 
 def calculate_code_churn(repo, interval_list):
-    pre_start_date = interval_list[0][0].date
-    pre_end_date = interval_list[0][1].date
-    post_end_date = interval_list[0][2].date
-    
-    pre_metric = CodeChurn(path_to_repo=repo, since=pre_start_date, to=pre_end_date)
-    pre_churn_total = pre_metric.count()    # Returns the total code churn in range
-    
-    post_metric = CodeChurn(path_to_repo=repo, since=pre_end_date, to=post_end_date)
-    post_churn_total = post_metric.count()
-    
-    values_array = pre_churn_total.values()
-    pre_days_difference = abs(pre_start_date - pre_end_date).total_seconds() / 86400.0
-    avg_churn = sum(values_array)/pre_days_difference
-    print("Average code churn for pre-period", pre_start_date, pre_end_date, avg_churn)
-    
-    values_array = post_churn_total.values()
-    post_days_difference = abs(post_end_date - pre_end_date).total_seconds() / 86400.0
-    avg_churn = sum(values_array)/post_days_difference
-    print("Average code churn for post-period", pre_end_date, post_end_date, avg_churn)
+    for i in range(0, len(interval_list)): 
+        pre_start_date = interval_list[i][0].date
+        pre_end_date = interval_list[i][1].date
+        post_end_date = interval_list[i][2].date
+        
+        pre_metric = CodeChurn(path_to_repo=repo, since=pre_start_date, to=pre_end_date)
+        pre_churn_total = pre_metric.count()    # Returns the total code churn in range
+        
+        post_metric = CodeChurn(path_to_repo=repo, since=pre_end_date, to=post_end_date)
+        post_churn_total = post_metric.count()
+        
+        print("Interval %d" %(i+1))
+        
+        values_array = pre_churn_total.values()
+        pre_days_difference = abs(pre_start_date - pre_end_date).total_seconds() / 86400.0
+        avg_churn = sum(values_array)/pre_days_difference
+        print("Average code churn for pre-period", pre_start_date, pre_end_date, avg_churn)
+        
+        values_array = post_churn_total.values()
+        post_days_difference = abs(post_end_date - pre_end_date).total_seconds() / 86400.0
+        avg_churn = sum(values_array)/post_days_difference
+        print("Average code churn for post-period", pre_end_date, post_end_date, avg_churn)
     
     
 
