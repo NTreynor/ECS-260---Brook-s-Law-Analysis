@@ -61,6 +61,9 @@ def evaluate_metrics(repo, interval_list):
         pre_start_date = interval_list[i][0].date
         pre_end_date = interval_list[i][1].date
         post_end_date = interval_list[i][2].date
+
+        activeDevsPrePeriod = interval_list[i][0].active_devs
+        activeDevsPostPeriod = interval_list[i][1].active_devs
         
         pre_days_difference = abs(pre_start_date - pre_end_date).total_seconds() / 86400.0
         post_days_difference = abs(post_end_date - pre_end_date).total_seconds() / 86400.0
@@ -94,7 +97,7 @@ def evaluate_metrics(repo, interval_list):
         print("%d   %s to %s %22s: %.3f %29s: %.3f" %(i+1, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), "Pre-Period", avg_churn_pre, "Pre-period", avg_cc_pre))
         print("%52s: %.3f %30s: %.3f" %("Post-period", avg_churn_post, "Post-period:", avg_cc_post))
 
-        df.loc[len(df.index)] = [repo, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), str(post_end_date.strftime('%Y-%m-%d')), avg_churn_pre, avg_churn_post, avg_cc_pre, avg_cc_post]
+        df.loc[len(df.index)] = [repo, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), str(post_end_date.strftime('%Y-%m-%d')), avg_churn_pre, avg_churn_post, avg_cc_pre, avg_cc_post, activeDevsPrePeriod, activeDevsPostPeriod]
         
     
     return None
@@ -180,7 +183,9 @@ data = {'Repo':[],
         'PrePeriodAvgChurn':[],
         'PostPeriodAvgChurn':[],
         'PrePeriodAvgCommits':[],
-        'PostPeriodAvgCommits':[]}
+        'PostPeriodAvgCommits':[],
+        'PrePeriodCommitters':[],
+        'PostPeriodCommitters':[]}
 df = pd.DataFrame(data=data)
 
 # Format for inserting new line into dataframe:
