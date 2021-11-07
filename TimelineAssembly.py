@@ -33,8 +33,19 @@ class TimelineBreakPoint:
     def __str__(self):
         return "Breakpoint on %s. First commit: %s. Final commit: %s. Active devs from this point on: %s. Author was %s." % (str(self.date), self.was_first_commit, self.was_final_commit, self.active_devs, self.authorEmail)
 
+
+# urls = ["https://github.com/runelite/runelite"]
+# urls = ["https://github.com/cosmos/cosmos-sdk"]
+# urls = ["https://github.com/deepmind/alphafold"]
+# urls = ["https://github.com/MangoDB-io/MangoDB"]
+# urls = ["https://github.com/bcrypt-ruby/bcrypt-ruby"]
+# urls = ["https://github.com/zeroclipboard/zeroclipboard"]
+# urls = ["https://github.com/github/resque"]
+# urls = ["https://github.com/leereilly/swot"]
+
+
 def main():
-    testUrl = ["https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite"]
+    testUrl = ["https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot", "https://github.com/goplus/gop", "https://github.com/ultralytics/yolov5", "https://github.com/xeolabs/scenejs", "https://github.com/github/gemoji", "https://github.com/piskelapp/piskel", "https://github.com/kitao/pyxel", "https://github.com/cloudhead/rx", "https://github.com/Orama-Interactive/Pixelorama", "https://github.com/misterokaygo/MapAssist", "https://github.com/bhollis/jsonview", "https://github.com/rtyley/bfg-repo-cleaner", "https://github.com/mhagger/git-imerge", "https://github.com/eddiezane/lunchy", "https://github.com/awaescher/RepoZ", "https://github.com/babysor/MockingBird"]
     for x in testUrl:
         uniqueAuthors, author_objects = populateAuthors(x)
 
