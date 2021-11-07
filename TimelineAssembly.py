@@ -2,6 +2,7 @@ from pydriller import Repository
 from pydriller.metrics.process.code_churn import CodeChurn
 from pydriller.metrics.process.commits_count import CommitsCount
 from datetime import datetime, timedelta
+import pandas as pd
 
 
 # Thought process: For a given github repo, our first task is to assemble a list of authors, and their start and end dates of active contribution.
@@ -54,7 +55,7 @@ def main():
 # All metric evaluations go in this function
 # Evaluates metrics, then outputs the results into a table
 def evaluate_metrics(repo, interval_list):
-    print("%s %50s %40s" %("Interval", "Average Code Churn", "Average Commit Count"))
+    print("%s %50s %40s" %("Interval", "Average Code Churn Per Day", "Average Commit Count Per Day"))
     
     for i in range(0, len(interval_list)): 
         pre_start_date = interval_list[i][0].date
@@ -72,10 +73,10 @@ def evaluate_metrics(repo, interval_list):
         post_churn_total = post_metric_churn.count()
         
         values_array_churn = pre_churn_total.values()
-        avg_churn = sum(values_array_churn)/pre_days_difference
+        avg_churn_pre = sum(values_array_churn)/pre_days_difference
         
         values_array_churn = post_churn_total.values()
-        avg_churn = sum(values_array_churn)/post_days_difference
+        avg_churn_post = sum(values_array_churn)/post_days_difference
         
         # Metric: Commit Count (Average/day)
         pre_metric_cc = CommitsCount(path_to_repo=repo, since=pre_start_date, to=pre_end_date)
@@ -85,13 +86,13 @@ def evaluate_metrics(repo, interval_list):
         post_cc_total = post_metric_cc.count()
         
         values_array_cc = pre_cc_total.values()
-        avg_cc = sum(values_array_cc)/pre_days_difference
+        avg_cc_pre = sum(values_array_cc)/pre_days_difference
         
         values_array_cc = post_cc_total.values()
-        avg_cc = sum(values_array_cc)/post_days_difference
+        avg_cc_post = sum(values_array_cc)/post_days_difference
         
-        print("%d   %s to %s %22s: %.3f %29s: %.3f" %(i+1, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), "Pre-Period", avg_churn, "Pre-period", avg_cc))
-        print("%52s: %.3f %30s: %.3f" %("Post-period", avg_churn, "Post-period:", avg_cc))
+        print("%d   %s to %s %22s: %.3f %29s: %.3f" %(i+1, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), "Pre-Period", avg_churn_pre, "Pre-period", avg_cc_pre))
+        print("%52s: %.3f %30s: %.3f" %("Post-period", avg_churn_post, "Post-period:", avg_cc_post))
         
     
     return None
@@ -170,5 +171,12 @@ def populateAuthors(repoUrl):
 # Perhaps unneeded function definitions below:
 # def findFirstCommit(author, repoUrl):
 # def findLastCommit(author, repoUrl):
-
+data = {'Repo':[],
+        'StartPeriod':[],
+        'MidPeriod':[],
+        'EndPeriod':[],
+        'PrePeriodAvgChurn':[],
+        'PostPeriodAvgChurn':[],
+        'PrePeriodAvgCommits':[],
+        'PostPeriodAvgCommits':[]}
 main()
