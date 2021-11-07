@@ -108,7 +108,7 @@ def locatePairedTwoWeekPlusIntervals(timeline):
     for i in range (1, len(timeline)-1):
         timeDiff = timeline[i+1].date - timeline[i].date
         #print("Difference in time: " + str(timeDiff))
-        if (timeDiff >= timedelta(days=14)) and (timeline[i].active_devs < timeline[i+1].active_devs) and timeline[i].active_devs >= 5:
+        if (timeDiff >= timedelta(days=14)) and (timeline[i-1].active_devs < timeline[i].active_devs) and timeline[i].active_devs >= 5:
 
             # If this is the case, then we have a 2 week period of stable development, that meet our team size requirements, after the addition of a new team member.
 
