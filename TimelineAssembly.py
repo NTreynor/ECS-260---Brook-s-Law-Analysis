@@ -39,67 +39,62 @@ def main():
 
         # print(len(uniqueAuthors))
         # print(len(author_objects))
-        #print(str(author_objects[0]))
-        #print(str(author_objects[1]))
-        #print(str(author_objects[2]))
+        # print(str(author_objects[0]))
+        # print(str(author_objects[1]))
+        # print(str(author_objects[2]))
 
         timeline = populateTimeline(author_objects)
         intervals = locatePairedTwoWeekPlusIntervals(timeline)
         # print(len(intervals))
     
-        calculate_code_churn(x, intervals)
-        calculate_commit_count(x, intervals)
-
-def calculate_code_churn(repo, interval_list):
-    # Loops through all significant intervals of development of a given repository and calculators the average code churn per day
+        # calculate_code_churn(x, intervals)
+        # calculate_commit_count(x, intervals)
+        evaluate_metrics(x, intervals)
+        
+# All metric evaluations go in this function
+# Evaluates metrics, then outputs the results into a table
+def evaluate_metrics(repo, interval_list):
+    print("%s %50s %40s" %("Interval", "Average Code Churn", "Average Commit Count"))
+    
     for i in range(0, len(interval_list)): 
         pre_start_date = interval_list[i][0].date
         pre_end_date = interval_list[i][1].date
         post_end_date = interval_list[i][2].date
         
-        pre_metric = CodeChurn(path_to_repo=repo, since=pre_start_date, to=pre_end_date)
-        pre_churn_total = pre_metric.count()    # Returns the total code churn in range
-        
-        post_metric = CodeChurn(path_to_repo=repo, since=pre_end_date, to=post_end_date)
-        post_churn_total = post_metric.count()
-        
-        print("Average Code Churn - Interval %d" %(i+1))
-        
-        values_array = pre_churn_total.values()
         pre_days_difference = abs(pre_start_date - pre_end_date).total_seconds() / 86400.0
-        avg_churn = sum(values_array)/pre_days_difference
-        print("Average code churn for pre-period", pre_start_date, "to", pre_end_date + ":", avg_churn)
-        
-        values_array = post_churn_total.values()
         post_days_difference = abs(post_end_date - pre_end_date).total_seconds() / 86400.0
-        avg_churn = sum(values_array)/post_days_difference
-        print("Average code churn for post-period", pre_end_date, "to", post_end_date + ":", avg_churn)
+        
+        # Metric: Code Churn (Average/day)
+        pre_metric_churn = CodeChurn(path_to_repo=repo, since=pre_start_date, to=pre_end_date)
+        pre_churn_total = pre_metric_churn.count()    # Returns the total code churn in range
     
-def calculate_commit_count(repo, interval_list):
-    for i in range(0, len(interval_list)): 
-        pre_start_date = interval_list[i][0].date
-        pre_end_date = interval_list[i][1].date
-        post_end_date = interval_list[i][2].date
+        post_metric_churn = CodeChurn(path_to_repo=repo, since=pre_end_date, to=post_end_date)
+        post_churn_total = post_metric_churn.count()
         
-        pre_metric = CommitsCount(path_to_repo=repo, since=pre_start_date, to=pre_end_date)
-        pre_cc_total = pre_metric.count()    # Returns the total code churn in range
+        values_array_churn = pre_churn_total.values()
+        avg_churn = sum(values_array_churn)/pre_days_difference
         
-        post_metric = CommitsCount(path_to_repo=repo, since=pre_end_date, to=post_end_date)
-        post_cc_total = post_metric.count()
+        values_array_churn = post_churn_total.values()
+        avg_churn = sum(values_array_churn)/post_days_difference
         
-        print("Average Commit Count - Interval %d" %(i+1))
+        # Metric: Commit Count (Average/day)
+        pre_metric_cc = CommitsCount(path_to_repo=repo, since=pre_start_date, to=pre_end_date)
+        pre_cc_total = pre_metric_cc.count()    # Returns the total code churn in range
         
-        values_array = pre_cc_total.values()
-        pre_days_difference = abs(pre_start_date - pre_end_date).total_seconds() / 86400.0
-        avg_cc = sum(values_array)/pre_days_difference
-        print("Average commit count for pre-period", pre_start_date, "to", pre_end_date + ":", avg_cc)
+        post_metric_cc = CommitsCount(path_to_repo=repo, since=pre_end_date, to=post_end_date)
+        post_cc_total = post_metric_cc.count()
         
-        values_array = post_cc_total.values()
-        post_days_difference = abs(post_end_date - pre_end_date).total_seconds() / 86400.0
-        avg_cc = sum(values_array)/post_days_difference
-        print("Average commit count for post-period", pre_end_date, "to", post_end_date + ":", avg_cc)
+        values_array_cc = pre_cc_total.values()
+        avg_cc = sum(values_array_cc)/pre_days_difference
+        
+        values_array_cc = post_cc_total.values()
+        avg_cc = sum(values_array_cc)/post_days_difference
+        
+        print("%d   %s to %s %22s: %.3f %29s: %.3f" %(i+1, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), "Pre-Period", avg_churn, "Pre-period", avg_cc))
+        print("%52s: %.3f %30s: %.3f" %("Post-period", avg_churn, "Post-period:", avg_cc))
         
     
+    return None
 
 def locatePairedTwoWeekPlusIntervals(timeline):
     # print("Attempting to locate paired two week intervals")
