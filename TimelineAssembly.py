@@ -45,7 +45,9 @@ class TimelineBreakPoint:
 
 
 def main():
-    testUrl = ["https://github.com/dbcli/mycli", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/facebookresearch/Detectron", "https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot", "https://github.com/goplus/gop", "https://github.com/ultralytics/yolov5", "https://github.com/xeolabs/scenejs", "https://github.com/github/gemoji", "https://github.com/piskelapp/piskel", "https://github.com/kitao/pyxel", "https://github.com/cloudhead/rx", "https://github.com/Orama-Interactive/Pixelorama", "https://github.com/misterokaygo/MapAssist", "https://github.com/bhollis/jsonview", "https://github.com/rtyley/bfg-repo-cleaner", "https://github.com/mhagger/git-imerge", "https://github.com/eddiezane/lunchy", "https://github.com/awaescher/RepoZ", "https://github.com/babysor/MockingBird"]
+
+    # testUrl = ["https://github.com/dbcli/mycli", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/facebookresearch/Detectron", "https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot", "https://github.com/goplus/gop", "https://github.com/ultralytics/yolov5", "https://github.com/xeolabs/scenejs", "https://github.com/github/gemoji", "https://github.com/piskelapp/piskel", "https://github.com/kitao/pyxel", "https://github.com/cloudhead/rx", "https://github.com/Orama-Interactive/Pixelorama", "https://github.com/misterokaygo/MapAssist", "https://github.com/bhollis/jsonview", "https://github.com/rtyley/bfg-repo-cleaner", "https://github.com/mhagger/git-imerge", "https://github.com/eddiezane/lunchy", "https://github.com/awaescher/RepoZ", "https://github.com/babysor/MockingBird"]
+    testUrl = ["https://github.com/dbcli/mycli"] ## just testing on this for now.
     for x in testUrl:
         uniqueAuthors, author_objects = populateAuthors(x)
 
@@ -104,7 +106,8 @@ def evaluate_metrics(repo, interval_list):
         
         values_array_cc = post_cc_total.values()
         avg_cc_post = sum(values_array_cc)/post_days_difference
-        
+
+        calc_14_day_metrics(repo, pre_end_date)
         print("%d   %s to %s %22s: %.3f %29s: %.3f" %(i+1, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), "Pre-Period", avg_churn_pre, "Pre-period", avg_cc_pre))
         print("%52s: %.3f %30s: %.3f" %("Post-period", avg_churn_post, "Post-period:", avg_cc_post))
 
@@ -112,6 +115,33 @@ def evaluate_metrics(repo, interval_list):
         
     
     return None
+
+def calc_14_day_metrics(repo, start_date):
+    daily_churn = []
+    for i in range (0, 14):
+        print(i)
+        days_churn = CodeChurn(path_to_repo=repo, since=(start_date + timedelta(days=(i+0))) , to=(start_date + timedelta(days=(i+1))))
+        daily_churn_total = days_churn.count()
+
+        values_array_cc = daily_churn_total.values()
+        daily_churn.append(sum(values_array_cc))
+
+    daily_commits = []
+    for i in range (0, 14):
+        print(i)
+        days_commits = CommitsCount(path_to_repo=repo, since=(start_date + timedelta(days=(i+0))), to=(start_date + timedelta(days=(i+1))))
+        daily_commits_total = days_commits.count()
+
+        values_array_commits = daily_commits_total.values()
+        daily_commits.append(sum(values_array_commits))
+
+    for i in range (0, 14):
+        print("On Day " + str(i) + " churn was " + str(daily_churn[i]) + " lines")
+        print("On Day " + str(i) + " there were " + str(daily_commits[i]) + " commits.")
+
+    return daily_churn, daily_commits
+
+
 
 def locatePairedTwoWeekPlusIntervals(timeline):
     # print("Attempting to locate paired two week intervals")
@@ -203,4 +233,5 @@ df = pd.DataFrame(data=data)
 # data.loc[len(data.index)] = ['Repo', 'StartPeriod', 'MidPeriod', 'EndPeriod', 'PrePeriodAvgChurn', 'PostPeriodAvgChurn', 'PrePeriodAvgCommits', 'PostPeriodAvgCommits']
 main()
 
-df.to_csv('ScrapedRepoData.csv', index=False, sep=',')
+# df.to_csv('ScrapedRepoData.csv', index=False, sep=',')
+df.to_csv('ScrapedRepoDataTest.csv', index=False, sep=',')
