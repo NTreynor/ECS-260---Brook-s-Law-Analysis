@@ -107,11 +107,11 @@ def evaluate_metrics(repo, interval_list):
         values_array_cc = post_cc_total.values()
         avg_cc_post = sum(values_array_cc)/post_days_difference
 
-        calc_14_day_metrics(repo, pre_end_date)
+        daily_churn, daily_commits = calc_14_day_metrics(repo, pre_end_date)
         print("%d   %s to %s %22s: %.3f %29s: %.3f" %(i+1, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), "Pre-Period", avg_churn_pre, "Pre-period", avg_cc_pre))
         print("%52s: %.3f %30s: %.3f" %("Post-period", avg_churn_post, "Post-period:", avg_cc_post))
 
-        df.loc[len(df.index)] = [repo, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), str(post_end_date.strftime('%Y-%m-%d')), avg_churn_pre, avg_churn_post, avg_cc_pre, avg_cc_post, activeDevsPrePeriod, activeDevsPostPeriod]
+        df.loc[len(df.index)] = [repo, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), str(post_end_date.strftime('%Y-%m-%d')), avg_churn_pre, avg_churn_post, avg_cc_pre, avg_cc_post, activeDevsPrePeriod, activeDevsPostPeriod, daily_churn, daily_commits]
         
     
     return None
@@ -226,7 +226,10 @@ data = {'Repo':[],
         'PrePeriodAvgCommits':[],
         'PostPeriodAvgCommits':[],
         'PrePeriodCommitters':[],
-        'PostPeriodCommitters':[]}
+        'PostPeriodCommitters':[],
+        'DailyChurn':[],
+        'DailyCommits':[]}
+
 df = pd.DataFrame(data=data)
 
 # Format for inserting new line into dataframe:
