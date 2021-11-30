@@ -111,7 +111,15 @@ def evaluate_metrics(repo, interval_list):
         print("%d   %s to %s %22s: %.3f %29s: %.3f" %(i+1, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), "Pre-Period", avg_churn_pre, "Pre-period", avg_cc_pre))
         print("%52s: %.3f %30s: %.3f" %("Post-period", avg_churn_post, "Post-period:", avg_cc_post))
 
-        df.loc[len(df.index)] = [repo, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), str(post_end_date.strftime('%Y-%m-%d')), avg_churn_pre, avg_churn_post, avg_cc_pre, avg_cc_post, activeDevsPrePeriod, activeDevsPostPeriod, daily_churn, daily_commits]
+        df.loc[len(df.index)] = [repo, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), str(post_end_date.strftime('%Y-%m-%d')),
+                                 avg_churn_pre, avg_churn_post, avg_cc_pre, avg_cc_post, activeDevsPrePeriod, activeDevsPostPeriod, daily_churn, daily_commits]
+
+        df2.loc[len(df2.index)] = [repo, str(pre_start_date.strftime('%Y-%m-%d')), str(pre_end_date.strftime('%Y-%m-%d')), str(post_end_date.strftime('%Y-%m-%d')),
+                                   avg_churn_pre, avg_churn_post, avg_cc_pre, avg_cc_post, activeDevsPrePeriod, activeDevsPostPeriod, daily_churn[0], daily_churn[1],
+                                   daily_churn[2], daily_churn[3], daily_churn[4], daily_churn[5], daily_churn[6], daily_churn[7], daily_churn[8], daily_churn[9],
+                                   daily_churn[10], daily_churn[11], daily_churn[12], daily_churn[13], daily_commits[0], daily_commits[1], daily_commits[2], daily_commits[3],
+                                   daily_commits[4], daily_commits[5], daily_commits[6], daily_commits[7], daily_commits[8], daily_commits[9], daily_commits[10], daily_commits[11],
+                                   daily_commits[12], daily_commits[13]]
         
     
     return None
@@ -232,9 +240,53 @@ data = {'Repo':[],
 
 df = pd.DataFrame(data=data)
 
+# Alternate method:
+
+data2 = {'Repo':[],
+        'StartPeriod':[],
+        'MidPeriod':[],
+        'EndPeriod':[],
+        'PrePeriodAvgChurn':[],
+        'PostPeriodAvgChurn':[],
+        'PrePeriodAvgCommits':[],
+        'PostPeriodAvgCommits':[],
+        'PrePeriodCommitters':[],
+        'PostPeriodCommitters':[],
+         'Day1Churn':[],
+         'Day2Churn':[],
+         'Day3Churn':[],
+         'Day4Churn':[],
+         'Day5Churn':[],
+         'Day6Churn':[],
+         'Day7Churn':[],
+         'Day8Churn':[],
+         'Day9Churn':[],
+         'Day10Churn':[],
+         'Day11Churn':[],
+         'Day12Churn':[],
+         'Day13Churn':[],
+         'Day14Churn':[],
+         'Day1Commits':[],
+         'Day2Commits':[],
+         'Day3Commits':[],
+         'Day4Commits':[],
+         'Day5Commits':[],
+         'Day6Commits':[],
+         'Day7Commits':[],
+         'Day8Commits':[],
+         'Day9Commits':[],
+         'Day10Commits':[],
+         'Day11Commits':[],
+         'Day12Commits':[],
+         'Day13Commits':[],
+         'Day14Commits':[]}
+
+df2 = pd.DataFrame(data=data2)
+
 # Format for inserting new line into dataframe:
 # data.loc[len(data.index)] = ['Repo', 'StartPeriod', 'MidPeriod', 'EndPeriod', 'PrePeriodAvgChurn', 'PostPeriodAvgChurn', 'PrePeriodAvgCommits', 'PostPeriodAvgCommits']
 main()
 
 # df.to_csv('ScrapedRepoData.csv', index=False, sep=',')
 df.to_csv('ScrapedRepoDataTest.csv', index=False, sep=',')
+df2.to_csv('ScrapedRepoDataTestAlternate.csv', index=False, sep=',')
