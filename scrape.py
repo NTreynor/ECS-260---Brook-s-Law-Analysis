@@ -79,14 +79,15 @@ def calc_14_day_metrics(repo, start_date):
     one_day = timedelta(days=1)
     
     days_commit_hashes = [[]]*14
+    days_commits_churn = [0]*14
+    days_commits_count = [0]*14
     
     day = 0
     temp = list()
+    day_commits = 0
     for commit in Repository(path_to_repo=repo, since=start_date, to=end_date).traverse_commits():
         print("day", day)
         print(commit.hash)
-        # print((commit.committer_date).astimezone)
-        
         
         # Check if commit was made on same day
         commit_date = (commit.committer_date).replace(tzinfo=pytz.UTC)
@@ -94,22 +95,30 @@ def calc_14_day_metrics(repo, start_date):
             # If commit is on the same day, add the commit hash to that day's list
             print(commit_date-curr_date)
             temp.append(commit.hash)
-            days_commit_hashes[day] = temp
+            
+            days_commit_hashes[day] = temp      #TODO: If we want, can make more efficient by updating less
+            
+            days_commits_count[day] += 1
+            days_commits_churn[day] -= commit.deletions
+            days_commits_churn[day] += commit.insertions
+            
         else: 
             # Else, increment the current day and day counter
             temp = list()
             temp.append(commit.hash)
             curr_date += one_day
             day += 1
+            days_commits_count[day] += 1
+            days_commits_churn[day] -= commit.deletions
+            days_commits_churn[day] += commit.insertions
             
-    return days_commit_hashes
+    return days_commits_churn, days_commits_count
 
 # Need to make sure that both datetime objects are either aware or naive. Can't do arithmetic between naive and aware
-start_date = datetime(2019,10,10, tzinfo=timezone.utc)
-commit_hashes = calc_14_day_metrics(urls, start_date)
-for i in range(0,14):
-    print(i, commit_hashes[i])
-    print()
+start_date = datetime(2021, 7, 18, tzinfo=timezone.utc)
+daily_churn, daily_commits = calc_14_day_metrics(urls, start_date)
+
+print(daily_churn, daily_commits)
 
 
     

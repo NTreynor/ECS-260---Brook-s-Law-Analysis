@@ -1,8 +1,9 @@
 from pydriller import Repository
 from pydriller.metrics.process.code_churn import CodeChurn
 from pydriller.metrics.process.commits_count import CommitsCount
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pandas as pd
+import pytz
 
 
 # Thought process: For a given github repo, our first task is to assemble a list of authors, and their start and end dates of active contribution.
@@ -47,8 +48,8 @@ class TimelineBreakPoint:
 def main():
 
     # testUrl = ["https://github.com/dbcli/mycli", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/facebookresearch/Detectron", "https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot", "https://github.com/goplus/gop", "https://github.com/ultralytics/yolov5", "https://github.com/xeolabs/scenejs", "https://github.com/github/gemoji", "https://github.com/piskelapp/piskel", "https://github.com/kitao/pyxel", "https://github.com/cloudhead/rx", "https://github.com/Orama-Interactive/Pixelorama", "https://github.com/misterokaygo/MapAssist", "https://github.com/bhollis/jsonview", "https://github.com/rtyley/bfg-repo-cleaner", "https://github.com/mhagger/git-imerge", "https://github.com/eddiezane/lunchy", "https://github.com/awaescher/RepoZ", "https://github.com/babysor/MockingBird"]
-    # testUrl = ["https://github.com/dbcli/mycli"] ## just testing on this for now.
-    testUrl = ["https://github.com/dbcli/mycli", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/Leaflet/Leaflet"] ## just testing on this for now.
+    testUrl = ["https://github.com/dbcli/mycli"] ## just testing on this for now.
+    # testUrl = ["https://github.com/dbcli/mycli", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/Leaflet/Leaflet"] ## just testing on this for now.
     for x in testUrl:
         uniqueAuthors, author_objects = populateAuthors(x)
 
@@ -125,30 +126,72 @@ def evaluate_metrics(repo, interval_list):
     
     return None
 
+# def calc_14_day_metrics(repo, start_date):
+#     daily_churn = []
+#     for i in range (0, 14):
+#         print(i)
+#         days_churn = CodeChurn(path_to_repo=repo, since=(start_date + timedelta(days=(i+0))) , to=(start_date + timedelta(days=(i+1))))
+#         daily_churn_total = days_churn.count()
+
+#         values_array_cc = daily_churn_total.values()
+#         daily_churn.append(sum(values_array_cc))
+
+#     daily_commits = []
+#     for i in range (0, 14):
+#         print(i)
+#         days_commits = CommitsCount(path_to_repo=repo, since=(start_date + timedelta(days=(i+0))), to=(start_date + timedelta(days=(i+1))))
+#         daily_commits_total = days_commits.count()
+
+#         values_array_commits = daily_commits_total.values()
+#         daily_commits.append(sum(values_array_commits))
+
+#     for i in range (0, 14):
+#         print("On Day " + str(i) + " churn was " + str(daily_churn[i]) + " lines")
+#         print("On Day " + str(i) + " there were " + str(daily_commits[i]) + " commits.")
+
+#     return daily_churn, daily_commits
+
 def calc_14_day_metrics(repo, start_date):
-    daily_churn = []
-    for i in range (0, 14):
-        print(i)
-        days_churn = CodeChurn(path_to_repo=repo, since=(start_date + timedelta(days=(i+0))) , to=(start_date + timedelta(days=(i+1))))
-        daily_churn_total = days_churn.count()
-
-        values_array_cc = daily_churn_total.values()
-        daily_churn.append(sum(values_array_cc))
-
-    daily_commits = []
-    for i in range (0, 14):
-        print(i)
-        days_commits = CommitsCount(path_to_repo=repo, since=(start_date + timedelta(days=(i+0))), to=(start_date + timedelta(days=(i+1))))
-        daily_commits_total = days_commits.count()
-
-        values_array_commits = daily_commits_total.values()
-        daily_commits.append(sum(values_array_commits))
-
-    for i in range (0, 14):
-        print("On Day " + str(i) + " churn was " + str(daily_churn[i]) + " lines")
-        print("On Day " + str(i) + " there were " + str(daily_commits[i]) + " commits.")
-
-    return daily_churn, daily_commits
+    end_date = start_date + timedelta(days=14)
+    curr_date = start_date
+    
+    one_day = timedelta(days=1)
+    
+    days_commit_hashes = [[]]*14
+    days_commits_churn = [0]*14
+    days_commits_count = [0]*14
+    
+    day = 0
+    temp = list()
+    day_commits = 0
+    for commit in Repository(path_to_repo=repo, since=start_date, to=end_date).traverse_commits():
+        print("day", day)
+        print(commit.hash)
+        
+        # Check if commit was made on same day
+        commit_date = commit.committer_date
+        if commit_date - curr_date < one_day:
+            # If commit is on the same day, add the commit hash to that day's list
+            print(commit_date-curr_date)
+            temp.append(commit.hash)
+            
+            days_commit_hashes[day] = temp      #TODO: If we want, can make more efficient by updating less
+            
+            days_commits_count[day] += 1
+            days_commits_churn[day] -= commit.deletions
+            days_commits_churn[day] += commit.insertions
+            
+        else: 
+            # Else, increment the current day and day counter
+            temp = list()
+            temp.append(commit.hash)
+            curr_date += one_day
+            day += 1
+            days_commits_count[day] += 1
+            days_commits_churn[day] -= commit.deletions
+            days_commits_churn[day] += commit.insertions
+            
+    return days_commits_churn, days_commits_count
 
 
 
