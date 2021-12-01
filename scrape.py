@@ -81,16 +81,24 @@ def calc_14_day_metrics(repo, start_date):
     days_commit_hashes = [[]]*14
     
     day = 0
+    temp = list()
     for commit in Repository(path_to_repo=repo, since=start_date, to=end_date).traverse_commits():
+        print("day", day)
         print(commit.hash)
         # print((commit.committer_date).astimezone)
+        
+        
         # Check if commit was made on same day
         commit_date = (commit.committer_date).replace(tzinfo=pytz.UTC)
         if commit_date - curr_date < one_day:
             # If commit is on the same day, add the commit hash to that day's list
-            days_commit_hashes[day].append(commit.hash)
+            print(commit_date-curr_date)
+            temp.append(commit.hash)
+            days_commit_hashes[day] = temp
         else: 
-            # Else, increment the current day and day counter 
+            # Else, increment the current day and day counter
+            temp = list()
+            temp.append(commit.hash)
             curr_date += one_day
             day += 1
             
@@ -100,7 +108,7 @@ def calc_14_day_metrics(repo, start_date):
 start_date = datetime(2019,10,10, tzinfo=timezone.utc)
 commit_hashes = calc_14_day_metrics(urls, start_date)
 for i in range(0,14):
-    print(commit_hashes[i])
+    print(i, commit_hashes[i])
     print()
 
 
