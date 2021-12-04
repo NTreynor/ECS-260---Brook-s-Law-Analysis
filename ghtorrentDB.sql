@@ -113,9 +113,32 @@ USE GHTorrentDump;
 -- GROUP BY pc.project_id) as CC
 -- WHERE CC.CommitCount >= 100;
 
+-- USING PULL REQUESTS INSTEAD OF COMMITS
+-- SELECT p.id, COUNT(pr.base_repo_id) AS PullREquests
+-- FROM projects p 
+-- 	LEFT JOIN pull_requests pr ON p.id = pr.base_repo_id 
+-- GROUP BY p.id;
 
-
-
+SELECT p.id, p.url, pmem.UserCount, preq.PullRequests
+FROM (
+	SELECT pj.repo_id, COUNT(pj.user_id) as UserCount
+	FROM project_members pj 
+		LEFT JOIN users u ON pj.user_id = u.id 
+	GROUP BY pj.repo_id
+    ) AS pmem, 
+    (
+    SELECT p.id, COUNT(pr.base_repo_id) AS PullRequests
+	FROM projects p 
+		LEFT JOIN pull_requests pr ON p.id = pr.base_repo_id 
+	GROUP BY p.id
+    ) AS preq,
+    projects p
+WHERE 
+	pmem.repo_id = p.id AND
+    preq.id = p.id AND
+    pmem.UserCount >= 5 AND
+    preq.PullRequests >= 5
+;
 
 
 
