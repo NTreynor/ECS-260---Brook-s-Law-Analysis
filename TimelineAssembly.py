@@ -1,3 +1,4 @@
+from git.exc import GitCommandError
 from pydriller import Repository
 from pydriller.metrics.process.code_churn import CodeChurn
 from pydriller.metrics.process.commits_count import CommitsCount
@@ -48,24 +49,28 @@ class TimelineBreakPoint:
 def main():
 
     # testUrl = ["https://github.com/dbcli/mycli", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/facebookresearch/Detectron", "https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot", "https://github.com/goplus/gop", "https://github.com/ultralytics/yolov5", "https://github.com/xeolabs/scenejs", "https://github.com/github/gemoji", "https://github.com/piskelapp/piskel", "https://github.com/kitao/pyxel", "https://github.com/cloudhead/rx", "https://github.com/Orama-Interactive/Pixelorama", "https://github.com/bhollis/jsonview", "https://github.com/rtyley/bfg-repo-cleaner", "https://github.com/mhagger/git-imerge", "https://github.com/eddiezane/lunchy", "https://github.com/awaescher/RepoZ", "https://github.com/babysor/MockingBird"]
-    # testUrl = ["https://github.com/dbcli/mycli"] ## just testing on this for now.
-    testUrl = ["https://github.com/dbcli/mycli", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/Leaflet/Leaflet", "https://github.com/github/gemoji", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot"] ## just testing on this for now.
+    # testUrl = ["https://github.com/misterokaygo/MapAssist"] ## just testing on this for now.
+    testUrl = ["https://github.com/misterokaygo/MapAssist", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/Leaflet/Leaflet", "https://github.com/github/gemoji", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot"] ## just testing on this for now.
     for x in testUrl:
-        uniqueAuthors, author_objects = populateAuthors(x)
+        try:
+            uniqueAuthors, author_objects = populateAuthors(x)
 
-        # print(len(uniqueAuthors))
-        # print(len(author_objects))
-        # print(str(author_objects[0]))
-        # print(str(author_objects[1]))
-        # print(str(author_objects[2]))
+            # print(len(uniqueAuthors))
+            # print(len(author_objects))
+            # print(str(author_objects[0]))
+            # print(str(author_objects[1]))
+            # print(str(author_objects[2]))
 
-        timeline = populateTimeline(author_objects)
-        intervals = locatePairedTwoWeekPlusIntervals(timeline)
-        # print(len(intervals))
-    
-        # calculate_code_churn(x, intervals)
-        # calculate_commit_count(x, intervals)
-        evaluate_metrics(x, intervals)
+            timeline = populateTimeline(author_objects)
+            intervals = locatePairedTwoWeekPlusIntervals(timeline)
+            # print(len(intervals))
+        
+            # calculate_code_churn(x, intervals)
+            # calculate_commit_count(x, intervals)
+            evaluate_metrics(x, intervals)
+        except GitCommandError:
+            print(x)
+            continue
         
 # All metric evaluations go in this function
 # Evaluates metrics, then outputs the results into a table
