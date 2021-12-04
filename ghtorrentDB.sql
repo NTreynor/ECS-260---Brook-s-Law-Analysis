@@ -42,10 +42,10 @@ USE GHTorrentDump;
 -- ;
 
 -- // QUERIES REPO ID (IN THIS DB) AND # OF COMMITS PER PROJECT ID //
-SELECT pc.project_id, COUNT(pc.commit_id) AS CommitCount
-FROM project_commits pc 
-	LEFT JOIN commits c ON pc.commit_id = c.id 
-GROUP BY pc.project_id;
+-- SELECT pc.project_id, COUNT(pc.commit_id) AS CommitCount
+-- FROM project_commits pc 
+-- 	LEFT JOIN commits c ON pc.commit_id = c.id 
+-- GROUP BY pc.project_id;
 
 -- // QUERIES THE ABOVE QUERY BUT ONLY PROJECTS WITH > 25 COMMITS // ALSO DOESN'T WORK, TOO MANY TABLES TO COUNT. NEED ALTERNATIVE
 -- SELECT p.id, p.url, pcom.CommitCount
@@ -83,9 +83,27 @@ GROUP BY pc.project_id;
 --     pcom.CommitCount >= 25
 -- ; 
 
+-- ***** POST MEETING ***** min commits 100 max 10000, min 10 contributors
+-- Creating table attempts
+DROP TABLE IF EXISTS `user_count_table`; -- Create a table for user count per project ID
+CREATE TABLE user_count_table
+SELECT p.url, p.id, COUNT(pj.user_id) AS UserCount
+FROM project_members pj 
+	LEFT JOIN users u ON pj.user_id = u.id 
+    LEFT JOIN projects p ON pj.repo_id = p.id
+GROUP BY pj.repo_id;
 
+SELECT *
+FROM user_count_table uct
+WHERE uct.UserCount >= 10 AND
+	uct.UserCount <= 1000;
 
-
+-- DROP TABLE IF EXISTS `commit_count_table`; -- Create a table for commit count per project ID
+-- CREATE TABLE commit_count_table
+-- SELECT p.id, COUNT(c.id) AS CommitCount
+-- FROM projects p 
+-- 	LEFT JOIN commits c ON p.id = c.project_id 
+-- GROUP BY p.id;
 
 
 
