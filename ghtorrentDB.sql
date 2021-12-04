@@ -136,8 +136,9 @@ FROM (
 WHERE 
 	pmem.repo_id = p.id AND
     preq.id = p.id AND
-    pmem.UserCount >= 5 AND
-    preq.PullRequests >= 5
+    pmem.UserCount >= 10 AND
+    preq.PullRequests >= 20 AND
+    preq.PullRequests <= 1000
 ;
 
 
