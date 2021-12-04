@@ -42,32 +42,46 @@ USE GHTorrentDump;
 -- ;
 
 -- // QUERIES REPO ID (IN THIS DB) AND # OF COMMITS PER PROJECT ID //
--- SELECT pc.project_id, COUNT(pc.commit_id) AS CommitCount
--- FROM project_commits pc 
--- 	LEFT JOIN commits c ON pc.commit_id = c.id 
--- GROUP BY pc.project_id;
+SELECT pc.project_id, COUNT(pc.commit_id) AS CommitCount
+FROM project_commits pc 
+	LEFT JOIN commits c ON pc.commit_id = c.id 
+GROUP BY pc.project_id;
 
--- // QUERIES THE ABOVE QUERIES BUT ONLY PROJECTS WITH > 5 USERS AND > 25 COMMITS // 
-SELECT p.id, p.url, pmem.UserCount, pcom.CommitCount
-FROM (
-	SELECT pj.repo_id, COUNT(pj.user_id) as UserCount
-	FROM project_members pj 
-		LEFT JOIN users u ON pj.user_id = u.id 
-	GROUP BY pj.repo_id
-    ) AS pmem, 
-    (
-    SELECT pc.project_id, COUNT(pc.commit_id) AS CommitCount
-	FROM project_commits pc 
-		LEFT JOIN commits c ON pc.commit_id = c.id 
-	GROUP BY pc.project_id
-    ) AS pcom,
-    projects p
-WHERE 
-	pmem.repo_id = p.id AND
-    pcom.project_id = p.id AND
-    pmem.UserCount >= 5 AND
-    pcom.CommitCount >= 25
-;
+-- // QUERIES THE ABOVE QUERY BUT ONLY PROJECTS WITH > 25 COMMITS // ALSO DOESN'T WORK, TOO MANY TABLES TO COUNT. NEED ALTERNATIVE
+-- SELECT p.id, p.url, pcom.CommitCount
+-- FROM (
+--     SELECT pc.project_id, COUNT(pc.commit_id) AS CommitCount
+-- 	FROM project_commits pc 
+-- 		LEFT JOIN commits c ON pc.commit_id = c.id 
+-- 	GROUP BY pc.project_id
+--     ) AS pcom,
+--     projects p
+-- WHERE 
+--     pcom.project_id = p.id AND
+--     pcom.CommitCount >= 25
+-- ; 
+
+-- // QUERIES THE ABOVE QUERIES BUT ONLY PROJECTS WITH > 5 USERS AND > 25 COMMITS // -- SHOULD WORK, CAN'T CONFIRM. DBMS DISCONNECTS
+-- SELECT p.id, p.url, pmem.UserCount, pcom.CommitCount
+-- FROM (
+-- 	SELECT pj.repo_id, COUNT(pj.user_id) as UserCount
+-- 	FROM project_members pj 
+-- 		LEFT JOIN users u ON pj.user_id = u.id 
+-- 	GROUP BY pj.repo_id
+--     ) AS pmem, 
+--     (
+--     SELECT pc.project_id, COUNT(pc.commit_id) AS CommitCount
+-- 	FROM project_commits pc 
+-- 		LEFT JOIN commits c ON pc.commit_id = c.id 
+-- 	GROUP BY pc.project_id
+--     ) AS pcom,
+--     projects p
+-- WHERE 
+-- 	pmem.repo_id = p.id AND
+--     pcom.project_id = p.id AND
+--     pmem.UserCount >= 5 AND
+--     pcom.CommitCount >= 25
+-- ; 
 
 
 
