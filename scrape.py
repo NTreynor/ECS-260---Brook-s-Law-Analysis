@@ -2,10 +2,11 @@ from pydriller import Repository
 from pydriller.metrics.process.code_churn import CodeChurn
 from pydriller.metrics.process.commits_count import CommitsCount
 from datetime import datetime, timedelta, timezone
+from dateutil import tz
 import pytz
 
 # Can be local or remote repository
-urls = ["https://github.com/runelite/runelite"]
+urls = ["https://github.com/NTreynor/ECS-260---Brook-s-Law-Analysis"]
 # urls = ["https://github.com/cosmos/cosmos-sdk"]       
 # urls = ["https://github.com/deepmind/alphafold"]      
 # urls = ["https://github.com/MangoDB-io/MangoDB"]      
@@ -88,34 +89,36 @@ def calc_14_day_metrics(repo, start_date):
     for commit in Repository(path_to_repo=repo, since=start_date, to=end_date).traverse_commits():
         print("day", day)
         print(commit.hash)
-        
-        # Check if commit was made on same day
-        commit_date = (commit.committer_date).replace(tzinfo=pytz.UTC)
-        if commit_date - curr_date < one_day:
-            # If commit is on the same day, add the commit hash to that day's list
-            print(commit_date-curr_date)
-            temp.append(commit.hash)
-            
-            days_commit_hashes[day] = temp      #TODO: If we want, can make more efficient by updating less
-            
-            days_commits_count[day] += 1
-            days_commits_churn[day] -= commit.deletions
-            days_commits_churn[day] += commit.insertions
-            
-        else: 
-            # Else, increment the current day and day counter
-            temp = list()
-            temp.append(commit.hash)
-            curr_date += one_day
-            day += 1
-            days_commits_count[day] += 1
-            days_commits_churn[day] -= commit.deletions
-            days_commits_churn[day] += commit.insertions
+
+        flag = 0
+        while (flag == 0):
+            # Check if commit was made on same day
+            commit_date = (commit.committer_date).replace(tzinfo=tz.tzoffset('UTC', 28800))
+            if commit_date - curr_date < one_day:
+                # If commit is on the same day, add the commit hash to that day's list
+                print(commit_date-curr_date)
+                temp.append(commit.hash)
+
+                days_commit_hashes[day] = temp      #TODO: If we want, can make more efficient by updating less
+
+                days_commits_count[day] += 1
+                days_commits_churn[day] -= commit.deletions
+                days_commits_churn[day] += commit.insertions
+                flag = 1
+
+            else:
+                # Else, increment the current day and day counter
+                temp = list()
+                curr_date += one_day
+                day += 1
+                #days_commits_count[day] += 1
+                #days_commits_churn[day] -= commit.deletions
+                #days_commits_churn[day] += commit.insertions
             
     return days_commits_churn, days_commits_count
 
 # Need to make sure that both datetime objects are either aware or naive. Can't do arithmetic between naive and aware
-start_date = datetime(2021, 7, 18, tzinfo=timezone.utc)
+start_date = datetime(2021, 11, 18, tzinfo=tz.tzoffset('UTC', 28800))
 daily_churn, daily_commits = calc_14_day_metrics(urls, start_date)
 
 print(daily_churn, daily_commits)
