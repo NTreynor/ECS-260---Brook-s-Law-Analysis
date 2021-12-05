@@ -119,28 +119,24 @@ USE GHTorrentDump;
 -- 	LEFT JOIN pull_requests pr ON p.id = pr.base_repo_id 
 -- GROUP BY p.id;
 
-SELECT p.id, p.url, pmem.UserCount, preq.PullRequests
-FROM (
-	SELECT pj.repo_id, COUNT(pj.user_id) as UserCount
-	FROM project_members pj 
-		LEFT JOIN users u ON pj.user_id = u.id 
-	GROUP BY pj.repo_id
-    ) AS pmem, 
+SELECT p.id, p.name, pmem.UserCount, preq.PullRequests, p.description, p.deleted, p.created_at, p.url
+FROM 
     (
     SELECT p.id, COUNT(pr.base_repo_id) AS PullRequests
 	FROM projects p 
 		LEFT JOIN pull_requests pr ON p.id = pr.base_repo_id 
 	GROUP BY p.id
     ) AS preq,
+    user_count_table pmem, 
     projects p
 WHERE 
-	pmem.repo_id = p.id AND
+	pmem.id = p.id AND
     preq.id = p.id AND
     pmem.UserCount >= 10 AND
     preq.PullRequests >= 20 AND
-    preq.PullRequests <= 1000
+    preq.PullRequests <= 1000 AND
+    p.deleted = 0
 ;
-
 
 
 -- // GET INFO IF YOU HAVE A PROJECT ID - i pretty much only used these for sanity checking // 
