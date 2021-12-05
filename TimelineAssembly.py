@@ -47,10 +47,11 @@ class TimelineBreakPoint:
 
 
 def main():
-
+  
     # testUrl = ["https://github.com/dbcli/mycli", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/isocpp/CppCoreGuidelines", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/facebookresearch/Detectron", "https://github.com/Leaflet/Leaflet", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot", "https://github.com/goplus/gop", "https://github.com/ultralytics/yolov5", "https://github.com/xeolabs/scenejs", "https://github.com/github/gemoji", "https://github.com/piskelapp/piskel", "https://github.com/kitao/pyxel", "https://github.com/cloudhead/rx", "https://github.com/Orama-Interactive/Pixelorama", "https://github.com/bhollis/jsonview", "https://github.com/rtyley/bfg-repo-cleaner", "https://github.com/mhagger/git-imerge", "https://github.com/eddiezane/lunchy", "https://github.com/awaescher/RepoZ", "https://github.com/babysor/MockingBird"]
     # testUrl = ["https://github.com/misterokaygo/MapAssist"] ## just testing on this for now.
     testUrl = ["https://github.com/misterokaygo/MapAssist", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/Leaflet/Leaflet", "https://github.com/github/gemoji", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot"] ## just testing on this for now.
+
     for x in testUrl:
         try:
             uniqueAuthors, author_objects = populateAuthors(x)
@@ -380,5 +381,5 @@ df2 = pd.DataFrame(data=data2)
 main()
 
 # df.to_csv('ScrapedRepoData.csv', index=False, sep=',')
-df.to_csv('ScrapedRepoDataTest.csv', index=False, sep=',')
-df2.to_csv('ScrapedRepoDataTestAlternate.csv', index=False, sep=',')
+df.to_csv('ScrapedRepoDataTest2.csv', index=False, sep=',')
+df2.to_csv('ScrapedRepoDataTestAlternate2.csv', index=False, sep=',')
