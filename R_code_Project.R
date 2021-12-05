@@ -1,8 +1,9 @@
 rm(list=ls()) 
-
+library(car)
 library(lme4)
+library(tidyverse)
 
-data=read.csv("/Users/halleh/Downloads/ECS-260---Brook-s-Law-Analysis-main/ScrapedRepoData.csv")
+data=read.csv("/Users/halleh/Downloads/ECS-260---Brook-s-Law-Analysis-main/ScrapedRepoDataTestAlternate.csv")
 
 delta_churn=data["PostPeriodAvgChurn"]-data["PrePeriodAvgChurn"]
 delta_churn=as.numeric(unlist(delta_churn))
@@ -35,19 +36,50 @@ print(a)
  a=cor.test( data$PrePeriodAvgCommits,data$PostPeriodAvgCommits,paired=TRUE)
  print("Summary of cor-Test")
  print(a)
- 
- a=t.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
- print("Summary of t-Test")
- print(a)
- a=cor.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
- print("Summary of cor-Test")
- print(a)
- 
- model1 = lm(data$PrePeriodAvgCommits~data$PostPeriodAvgCommits, data=data)
+ # 
+ # a=t.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
+ # print("Summary of t-Test")
+ # print(a)
+ # a=cor.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
+ # print("Summary of cor-Test")
+ # print(a)
+ # 
+ model1 = lm(PrePeriodAvgCommits~PostPeriodAvgCommits, data=data)
  print(summary(model1))
  # vif(model1)
- plot(model1)
+ # plot(model1)
  print(anova(model1))
+
+ data2=reshape(data=data, idvar="PrePeriodAvgCommits",
+               varying = c("PrePeriodAvgChurn","PostPeriodAvgChurn"),
+               v.names = "Churn",
+               timevar = "Period", 
+               new.row.names = 1:1000,
+               direction = "long")
+ data2=data2[data2$Churn>-1000,]
+ ggplot(data2,aes(x=PrePeriodAvgCommits, 
+                  y=Churn,
+                  color=as.character(Period) ))+
+         geom_point()+
+         geom_smooth(method="lm")
  
- 
- 
+a=t.test( data$PrePeriodAvgCommits,delta_churn,paired=TRUE)
+print("Summary of t-Test")
+print(a)
+a=cor.test( data$PrePeriodAvgCommits,delta_churn,paired=TRUE)
+print("Summary of cor-Test")
+print(a)
+
+model2 = lm(data$PrePeriodAvgCommits~data$PostPeriodAvgChurn, data=data)
+print(summary(model2))
+# vif(model2)
+# plot(model2)
+print(anova(model2))
+
+model3 = lm(data$PrePeriodAvgCommits~data$PrePeriodAvgChurn, data=data)
+print(summary(model3))
+# vif(model3)
+# plot(model3)
+print(anova(model3))
+
+#  
