@@ -60,9 +60,10 @@ def main():
     #testUrl = ["https://github.com/litl/rauth", "https://github.com/beefproject/beef", "https://github.com/recurly/recurly-js", "https://github.com/OpenMRS/openmrs-module-htmlformentry", "https://github.com/opscode-cookbooks/postgresql"]
 
     #testUrl = ["https://github.com/edgecase/ruby_koans", "https://github.com/habari/system", "https://github.com/inviqa/chef-php-extra", "https://github.com/technicalpickles/homesick", "https://github.com/UnionOfRAD/manual", "https://github.com/IronFoundry/ironfoundry"]
-    testUrl = ["https://github.com/twitter/twitter-cldr-rb", "https://github.com/webdetails/cdf", "https://github.com/rails/activeresource",
-               "https://github.com/heartcombo/responders", "https://github.com/joyent/smartos-live", "https://github.com/JetBrains/la-clojure",
-               "https://github.com/mozilla/bidpom", "https://github.com/thoughtbot/trail-map", "https://github.com/mochi/mochiweb"]
+    testUrl2 = ["https://github.com/twitter/twitter-text", "https://github.com/Normation/rudder-doc", "https://github.com/jfirebaugh/konacha",
+               "https://github.com/basho/eleveldb", "https://github.com/facebook/facebook-android-sdk", "https://github.com/datamapper/do",
+               "https://github.com/django-nonrel/mongodb-engine", "https://github.com/racker/rackspace-monitoring", "https://github.com/holderdeord/hdo-site"]
+    testUrl = ["https://github.com/twitter/twitter-text","https://github.com/voldemort/voldemort"]
     for x in testUrl:
         try:
             uniqueAuthors, author_objects = populateAuthors(x)
