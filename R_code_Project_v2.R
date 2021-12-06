@@ -3,12 +3,20 @@ library(car)
 library(lme4)
 library(tidyverse)
 
+#Read data
 data=read.csv("/Users/halleh/Downloads/ECS-260---Brook-s-Law-Analysis-main/ScrapedRepoDataTestAlternate.csv")
 data=na.omit(data)
+
+#Filter data
 data=data[data$PrePeriodAvgChurn>-1000,]
 data=data[data$PrePeriodAvgChurn<1000,]
+data=data[data$PostPeriodAvgChurn>-1000,]
+data=data[data$PostPeriodAvgChurn<1000,]
 
+data=data[data$PostPeriodAvgCommits<10,]
+data=data[data$PrePeriodAvgCommits<10,]
 
+#Delta Model
 delta_churn=data["PostPeriodAvgChurn"]-data["PrePeriodAvgChurn"]
 delta_churn=as.numeric(unlist(delta_churn))
 delta_commits=data["PostPeriodAvgCommits"]-data["PrePeriodAvgCommits"]
@@ -25,7 +33,7 @@ print("Summary of Delta Commits")
 print(a)
 
 hist(delta_churn,
-     breaks=201,
+     breaks=51,
      main="Delta Churns",
      xlab="Delta Churns",
      xlim=c(-1000,1000)
@@ -34,6 +42,7 @@ a=summary(delta_churn)
 print("Summary of Delta Churns")
 print(a)
 
+#Regression Model
  a=t.test( data$PrePeriodAvgCommits,data$PostPeriodAvgCommits,paired=TRUE)
  print("Summary of t-Test")
  print(a)
@@ -41,7 +50,7 @@ print(a)
  print("Summary of cor-Test")
  print(a)
  # 
-  a=t.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
+ a=t.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
  print("Summary of t-Test")
  print(a)
  a=cor.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
@@ -54,45 +63,13 @@ print(a)
  plot(model1)
  print(anova(model1))
  
- a=cor.test( data$PrePeriodAvgCommits,data$PrePeriodAvgChurn,paired=TRUE)
- print("Summary of cor-Test")
- print(a)
- 
- a=cor.test( data$PrePeriodAvgCommits,data$PostPeriodAvgChurn,paired=TRUE)
- print("Summary of cor-Test")
- print(a)
- 
- 
- data2=reshape(data=data, idvar="PrePeriodAvgCommits",
-               varying = c("PrePeriodAvgChurn","PostPeriodAvgChurn"),
-               v.names = "Churn",
-               timevar = "Period", 
-               new.row.names = 1:1000,
-               direction = "long")
- data2=data2[data2$Churn>-1000,]
- ggplot(data2,aes(x=PrePeriodAvgCommits, 
-                  y=Churn,
-                  color=as.character(Period) ))+
-         geom_point()+
-         geom_smooth(method="lm")
- 
-a=t.test( data$PrePeriodAvgCommits,delta_churn,paired=TRUE)
-print("Summary of t-Test")
-print(a)
-a=cor.test( data$PrePeriodAvgCommits,delta_churn,paired=TRUE)
-print("Summary of cor-Test")
-print(a)
 
-model2 = lm(data$PrePeriodAvgCommits~data$PostPeriodAvgChurn, data=data)
+model2 = lm(data$PrePeriodAvgChurn~data$PostPeriodAvgChurn, data=data)
 print(summary(model2))
 # vif(model2)
 plot(model2)
 print(anova(model2))
 
-model3 = lm(data$PrePeriodAvgCommits~data$PrePeriodAvgChurn, data=data)
-print(summary(model3))
-# vif(model3)
-plot(model3)
-print(anova(model3))
+
 
 #  
