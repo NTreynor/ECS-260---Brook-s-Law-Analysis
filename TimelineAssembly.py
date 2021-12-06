@@ -60,10 +60,9 @@ def main():
     #testUrl = ["https://github.com/litl/rauth", "https://github.com/beefproject/beef", "https://github.com/recurly/recurly-js", "https://github.com/OpenMRS/openmrs-module-htmlformentry", "https://github.com/opscode-cookbooks/postgresql"]
 
     #testUrl = ["https://github.com/edgecase/ruby_koans", "https://github.com/habari/system", "https://github.com/inviqa/chef-php-extra", "https://github.com/technicalpickles/homesick", "https://github.com/UnionOfRAD/manual", "https://github.com/IronFoundry/ironfoundry"]
-    testUrl2 = ["https://github.com/twitter/twitter-text", "https://github.com/Normation/rudder-doc", "https://github.com/jfirebaugh/konacha",
-               "https://github.com/basho/eleveldb", "https://github.com/facebook/facebook-android-sdk", "https://github.com/datamapper/do",
-               "https://github.com/django-nonrel/mongodb-engine", "https://github.com/racker/rackspace-monitoring", "https://github.com/holderdeord/hdo-site"]
-    testUrl = ["https://github.com/twitter/twitter-text","https://github.com/voldemort/voldemort"]
+    testUrl = ["https://github.com/flatiron/plates", "https://github.com/OpenMRS/openmrs-module-hl7query", "https://github.com/sympy/sympy-bot",
+               "https://github.com/yast/yast-core", "https://github.com/CakeDC/users", "https://github.com/mindsnacks/Zinc-ObjC",
+               "https://github.com/mono/maccore", "https://github.com/liip/LiipThemeBundle", "https://github.com/plone/plone.app.layout"]
     for x in testUrl:
         try:
             uniqueAuthors, author_objects = populateAuthors(x)
