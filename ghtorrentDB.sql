@@ -119,7 +119,7 @@ USE GHTorrentDump;
 -- 	LEFT JOIN pull_requests pr ON p.id = pr.base_repo_id 
 -- GROUP BY p.id;
 
-SELECT p.id, p.name, pmem.UserCount, preq.PullRequests, p.description, p.created_at, p.url
+SELECT p.url, p.name, pmem.UserCount, preq.PullRequests, p.description, p.created_at
 FROM 
     (
     SELECT p.id, COUNT(pr.base_repo_id) AS PullRequests
@@ -134,7 +134,7 @@ WHERE
     preq.id = p.id AND
     pmem.UserCount >= 10 AND
     preq.PullRequests >= 20 AND
-    preq.PullRequests <= 1000 AND
+    preq.PullRequests <= 200 AND
     p.deleted = 0
 ;
 
