@@ -60,8 +60,9 @@ def main():
     #testUrl = ["https://github.com/litl/rauth", "https://github.com/beefproject/beef", "https://github.com/recurly/recurly-js", "https://github.com/OpenMRS/openmrs-module-htmlformentry", "https://github.com/opscode-cookbooks/postgresql"]
 
     #testUrl = ["https://github.com/edgecase/ruby_koans", "https://github.com/habari/system", "https://github.com/inviqa/chef-php-extra", "https://github.com/technicalpickles/homesick", "https://github.com/UnionOfRAD/manual", "https://github.com/IronFoundry/ironfoundry"]
-    testUrl = ["https://github.com/jenkinsci/cvs-plugin", "https://github.com/FreeRDP/xrdp", "https://github.com/hasgeek/hasgeek.tv",
-               "https://github.com/opscode/omnibus-software", "https://github.com/opscode/omnibus-ruby", "https://github.com/splunk/splunk-sdk-java",
+    testUrl = ["https://github.com/yui/yuicompressor", "https://github.com/moovweb/uranium", "https://github.com/Kunstmaan/KunstmaanPagePartBundle",
+               "https://github.com/SpringSource/spring-net", "https://github.com/hibernate/hibernate-tools", "https://github.com/swagger-api/swagger-js",
+               "https://github.com/symfony-cmf/SimpleCmsBundle", "https://github.com/sonatype/nexus-maven-plugins", "https://github.com/sous-chefs/yum"]
     for x in testUrl:
         try:
             uniqueAuthors, author_objects = populateAuthors(x)
