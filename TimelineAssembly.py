@@ -52,7 +52,15 @@ def main():
     # testUrl = ["https://github.com/misterokaygo/MapAssist"] ## just testing on this for now.
     # testUrl = ["https://github.com/misterokaygo/MapAssist", "https://github.com/BVLC/caffe", "https://github.com/obsproject/obs-studio", "https://github.com/Leaflet/Leaflet", "https://github.com/github/gemoji", "https://github.com/runelite/runelite", "https://github.com/cosmos/cosmos-sdk", "https://github.com/leereilly/swot"] ## just testing on this for now.
     #testUrl = ["https://github.com/matplotlib/basemap", "https://github.com/NUBIC/ncs_navigator_core", "https://github.com/github/android", "https://github.com/pculture/unisubs", "https://github.com/mana/manaserv"]
-    testUrl = ["https://github.com/ryanb/cancan", "https://github.com/mobify/mobifyjs", "https://github.com/Netflix/SimianArmy", "https://github.com/bitly/dablooms", "https://github.com/mongodb/mongo", "https://github.com/collectiveidea/delayed_job" ]
+    # testUrl = ["https://github.com/ryanb/cancan", "https://github.com/mobify/mobifyjs", "https://github.com/Netflix/SimianArmy", "https://github.com/bitly/dablooms", "https://github.com/mongodb/mongo", "https://github.com/collectiveidea/delayed_job" ]
+    # testUrl = ["https://github.com/jupiterjs/canjs"]
+    #"https://github.com/Shopify/batman", "https://github.com/projectwonder/wonder", "https://github.com/mono/mono"]
+    #testUrl = ["https://github.com/heroku/heroku-buildpack-ruby", "https://github.com/spree/spree_reviews", "https://github.com/gwu-libraries/launchpad", "https://github.com/seajs/seajs", "https://github.com/django-nonrel/djangotoolbox", "https://github.com/lml/quadbase", "https://github.com/dellcloudedge/barclamp-nova_dashboard"]
+    #testUrl = ["https://github.com/dellcloudedge/barclamp-dns", "https://github.com/zendframework/ZendDeveloperTools", "https://github.com/jupiterjs/jquerymx", "https://github.com/dojo/dojox"]
+    #testUrl = ["https://github.com/litl/rauth", "https://github.com/beefproject/beef", "https://github.com/recurly/recurly-js", "https://github.com/OpenMRS/openmrs-module-htmlformentry", "https://github.com/opscode-cookbooks/postgresql"]
+
+    testUrl = ["https://github.com/edgecase/ruby_koans", "https://github.com/habari/system", "https://github.com/inviqa/chef-php-extra", "https://github.com/technicalpickles/homesick", "https://github.com/UnionOfRAD/manual", "https://github.com/IronFoundry/ironfoundry"]
+
     for x in testUrl:
         try:
             uniqueAuthors, author_objects = populateAuthors(x)
