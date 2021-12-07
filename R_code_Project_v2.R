@@ -10,7 +10,7 @@ data=na.omit(data)
 #Filter data
 data=data[data$PrePeriodAvgChurn>-681.4,]
 data=data[data$PrePeriodAvgChurn<1643.43,]
-data=data[data$PostPeriodAvgChurn>-5681.4,]
+data=data[data$PostPeriodAvgChurn>-681.4,]
 data=data[data$PostPeriodAvgChurn<1643.43,]
 
 data=data[data$PostPeriodAvgCommits<15,]
