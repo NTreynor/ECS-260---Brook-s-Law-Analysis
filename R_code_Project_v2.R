@@ -7,6 +7,16 @@ library(tidyverse)
 data=read.csv("/Users/halleh/Downloads/ECS-260---Brook-s-Law-Analysis-main/ScrapedRepoDataTestAlternate.csv")
 data=na.omit(data)
 
+#QQ Plot
+par(mfcol = c(1, 2))
+qqnorm(data$PrePeriodAvgChurn, 
+       ylab = "PrePeriodAvgChurn")
+qqline(data$PrePeriodAvgChurn)
+
+qqnorm(data$PostPeriodAvgChurn, 
+       ylab = "PostPeriodAvgChurn")
+qqline(data$PostPeriodAvgChurn)
+
 #Filter data
 data=data[data$PrePeriodAvgChurn>-681.4,]
 data=data[data$PrePeriodAvgChurn<1643.43,]
