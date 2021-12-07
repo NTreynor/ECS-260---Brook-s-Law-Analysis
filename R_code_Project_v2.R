@@ -25,7 +25,7 @@ delta_commits=as.numeric(unlist(delta_commits))
 hist(delta_commits,
 breaks=21,
 main="Delta Commits",
-xlab="Delta COmmits",
+xlab="Delta Commits",
 xlim=c(-10,10)
 )
 a=summary(delta_commits) 
@@ -34,8 +34,8 @@ print(a)
 
 hist(delta_churn,
      breaks=51,
-     main="Delta Churns",
-     xlab="Delta Churns",
+     main="Delta Churn",
+     xlab="Delta Churn",
      xlim=c(-1000,1000)
 )
 a=summary(delta_churn)
