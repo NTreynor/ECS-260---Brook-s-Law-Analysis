@@ -8,13 +8,13 @@ data=read.csv("/Users/halleh/Downloads/ECS-260---Brook-s-Law-Analysis-main/Scrap
 data=na.omit(data)
 
 #Filter data
-data=data[data$PrePeriodAvgChurn>-1000,]
-data=data[data$PrePeriodAvgChurn<1000,]
-data=data[data$PostPeriodAvgChurn>-1000,]
-data=data[data$PostPeriodAvgChurn<1000,]
+data=data[data$PrePeriodAvgChurn>-681.4,]
+data=data[data$PrePeriodAvgChurn<1643.43,]
+data=data[data$PostPeriodAvgChurn>-5681.4,]
+data=data[data$PostPeriodAvgChurn<1643.43,]
 
-data=data[data$PostPeriodAvgCommits<10,]
-data=data[data$PrePeriodAvgCommits<10,]
+data=data[data$PostPeriodAvgCommits<15,]
+data=data[data$PrePeriodAvgCommits<15,]
 
 #Delta Model
 delta_churn=data["PostPeriodAvgChurn"]-data["PrePeriodAvgChurn"]
@@ -50,6 +50,17 @@ print(a)
  print("Summary of cor-Test")
  print(a)
  # 
+ model1 = lm(PrePeriodAvgCommits~PostPeriodAvgCommits, data=data)
+ print(summary(model1))
+ # vif(model1)
+ plot(model1)
+ print(anova(model1))
+ 
+ ggplot(data,aes(x=PrePeriodAvgCommits, 
+                 y=PostPeriodAvgCommits ))+
+   geom_point()+
+   geom_smooth(method="lm")
+ 
  a=t.test( data$PrePeriodAvgChurn,data$PostPeriodAvgChurn,paired=TRUE)
  print("Summary of t-Test")
  print(a)
@@ -57,13 +68,6 @@ print(a)
  print("Summary of cor-Test")
  print(a)
  # 
- model1 = lm(PrePeriodAvgCommits~PostPeriodAvgCommits, data=data)
- print(summary(model1))
- # vif(model1)
- plot(model1)
- print(anova(model1))
- 
-
 model2 = lm(data$PrePeriodAvgChurn~data$PostPeriodAvgChurn, data=data)
 print(summary(model2))
 # vif(model2)
@@ -71,5 +75,10 @@ plot(model2)
 print(anova(model2))
 
 
+
+ggplot(data,aes(x=PrePeriodAvgChurn, 
+                y=PostPeriodAvgChurn ))+
+  geom_point()+
+  geom_smooth(method="lm")
 
 #  
